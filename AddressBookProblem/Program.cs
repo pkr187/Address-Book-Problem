@@ -2,6 +2,22 @@
 {
     internal class Program
     {
+        public static void ShowCountofContactsbyCityandState()
+        {
+            Console.WriteLine("Enter city name to show counts in that city");
+            string icity = Console.ReadLine();
+
+            if (cityDict.ContainsKey(icity))
+                Console.WriteLine("number of contacts in city {0} are {1}", icity, cityDict[icity].Count);
+            else
+                Console.WriteLine("number of contacts in city {0} are zero", icity);
+            Console.WriteLine("Enter state name to show counts in that state");
+            icity = Console.ReadLine();
+            if (stateDict.ContainsKey(icity))
+                Console.WriteLine("number of contacts in state {0} are {1}", icity, stateDict[icity].Count);
+            else
+                Console.WriteLine("number of contacts in state {0} are zero", icity);
+        }
         public static void FilterByCityAndState()
         {
             foreach (var kv in addressBookSystem)
@@ -84,6 +100,7 @@
             contact.phone = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Enter email: ");
             contact.email = Console.ReadLine();
+
             Console.WriteLine("Enter zipcode: ");
             contact.zipcode = Convert.ToInt32(Console.ReadLine());
             return true;
@@ -92,11 +109,15 @@
         {
             Console.WriteLine("Do you want to add new contact press 1 or press 2 to cancle.");
             int num = Convert.ToInt32(Console.ReadLine());
+
+
             while (num == 1)
             {
                 Contact contact = new Contact();
+
                 if (FillingDetails(contact, contacts))
                     contacts.Add(contact);
+
                 Console.WriteLine("Do you want to add anoter contact then press 1 or press 2 for exit ");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -170,7 +191,6 @@
                     if (contacts[i].firstName == firstName)
                     {
                         found = true;  //found the contact
-
                         contacts.RemoveAt(i);
                         break;
                     }
@@ -232,6 +252,7 @@
             DisplayDictionary(addressBookSystem);
             //SearchByCityOrState();
             FilterByCityAndState();
+            ShowCountofContactsbyCityandState();
             //DisplayContacts();
             //EditContacts();
             //DeleteContacts();            
