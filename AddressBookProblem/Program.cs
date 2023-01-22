@@ -2,6 +2,30 @@
 {
     internal class Program
     {
+        public static void SearchByCityOrState()
+        {
+            Console.WriteLine("Do you want to search city or state for contact then press 1 or press 2 for exit ");
+            int num = Convert.ToInt32(Console.ReadLine());
+            while (num == 1)
+            {
+                List<Contact> tempcontacts = new List<Contact>();
+                Console.WriteLine("Enter the city or state to search :");
+                string iCity = Console.ReadLine();
+
+                foreach (var kv in addressBookSystem)
+                {
+                    var list = kv.Value.Where(x => x.city.Equals(iCity)).ToList();
+                    tempcontacts.AddRange(list);
+                }
+                Console.WriteLine("Here are found persons : ");
+                foreach (Contact contact in tempcontacts)
+                {
+                    Console.WriteLine(contact.firstName);
+                }
+                Console.WriteLine("Do you want to search city or state for contact then press 1 or press 2 for exit ");
+                num = Convert.ToInt32(Console.ReadLine());
+            }
+        }
         public static bool FillingDetails(Contact contact, List<Contact> contacts)
         {
             Console.WriteLine("Enter first name: ");
@@ -34,10 +58,8 @@
             while (num == 1)
             {
                 Contact contact = new Contact();
-
                 if (FillingDetails(contact, contacts))
                     contacts.Add(contact);
-
                 Console.WriteLine("Do you want to add anoter contact then press 1 or press 2 for exit ");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -49,7 +71,6 @@
             //Any will check for duplicate same firstnamename in database
             if (contacts.Count > 0)
             {
-
                 if (contacts.Any(x => x.firstName.Equals(firstName)))
                 {
                     Console.WriteLine("Already exist in database");
@@ -63,7 +84,6 @@
             //print contacts
             Console.WriteLine("=============================================================");
             Console.WriteLine("Current contacts in adress book:");
-
             foreach (Contact contact in contacts)
             {
                 Console.WriteLine(contact.firstName);
@@ -112,7 +132,7 @@
                 {
                     if (contacts[i].firstName == firstName)
                     {
-                        found = true;  //found the contac
+                        found = true;  //found the contact
                         contacts.RemoveAt(i);
                         break;
                     }
@@ -151,14 +171,15 @@
                 //creating list of contact
                 List<Contact> addressBook = new List<Contact>();
                 addressBookSystem.Add(name, addressBook);
+
                 CreatingContacts(addressBook);
+
                 if (addressBook.Count > 0)
                 {
                     EditContacts(addressBook);
                     DeleteContacts(addressBook);
                 }
                 DisplayDictionary();
-
                 Console.WriteLine("Do you want to create another addressbook press 1 or press 2 for exit:");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -169,6 +190,7 @@
             Console.WriteLine("Welcome to Address Book Sytem.");
             CreateAddresBook();
             DisplayDictionary();
+            SearchByCityOrState();
             //DisplayContacts();
             //EditContacts();
             //DeleteContacts();            
