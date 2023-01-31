@@ -2,17 +2,41 @@
 {
     internal class Program
     {
+        public static void SortByName()
+        {
+            Console.WriteLine("Do you want to sort contact using firstname then press 1 or press 2 for exit ");
+            int num = Convert.ToInt32(Console.ReadLine());
+
+            List<Contact> sort = new List<Contact>();
+            foreach (var kv in addressBookSystem)
+            {
+                var list = kv.Value.OrderBy(x => x.firstName).ToList();
+                sort.AddRange(list);
+            }
+            DisplayContactsByName(sort);
+            Console.WriteLine("===============================");
+        }
+        public static void DisplayContactsByName(List<Contact> sort)
+        {
+            //print contacts
+            Console.WriteLine("Current contacts in adress book:");
+            foreach (Contact contact in sort)
+            {
+                Console.WriteLine(contact.firstName);
+            }
+            Console.WriteLine("=============================================================");
+        }
         public static void ShowCountofContactsbyCityandState()
         {
             Console.WriteLine("Enter city name to show counts in that city");
             string icity = Console.ReadLine();
-
             if (cityDict.ContainsKey(icity))
                 Console.WriteLine("number of contacts in city {0} are {1}", icity, cityDict[icity].Count);
             else
                 Console.WriteLine("number of contacts in city {0} are zero", icity);
             Console.WriteLine("Enter state name to show counts in that state");
             icity = Console.ReadLine();
+
             if (stateDict.ContainsKey(icity))
                 Console.WriteLine("number of contacts in state {0} are {1}", icity, stateDict[icity].Count);
             else
@@ -100,7 +124,6 @@
             contact.phone = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Enter email: ");
             contact.email = Console.ReadLine();
-
             Console.WriteLine("Enter zipcode: ");
             contact.zipcode = Convert.ToInt32(Console.ReadLine());
             return true;
@@ -110,14 +133,11 @@
             Console.WriteLine("Do you want to add new contact press 1 or press 2 to cancle.");
             int num = Convert.ToInt32(Console.ReadLine());
 
-
             while (num == 1)
             {
                 Contact contact = new Contact();
-
                 if (FillingDetails(contact, contacts))
                     contacts.Add(contact);
-
                 Console.WriteLine("Do you want to add anoter contact then press 1 or press 2 for exit ");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -140,8 +160,8 @@
         public static void DisplayContacts(List<Contact> contacts)
         {
             //print contacts
-            Console.WriteLine("=============================================================");
             Console.WriteLine("Current contacts in adress book:");
+
             foreach (Contact contact in contacts)
             {
                 Console.WriteLine(contact.firstName);
@@ -162,6 +182,7 @@
                     if (contacts[i].firstName == firstName)
                     {
                         found = true;  //found the contact
+
                         //now editing...
                         if (!FillingDetails(contacts[i], contacts)) ;
                         Console.WriteLine("Name is available in database");
@@ -181,10 +202,12 @@
             //deleting contact
             Console.WriteLine("Do you want to delete contact press 1 to delete or press 2 to cancle.");
             int num = Convert.ToInt32(Console.ReadLine());
+
             while (num == 1 && contacts.Count > 0)
             {
                 Console.WriteLine("Enter contact First name");
                 string firstName = Console.ReadLine();
+
                 bool found = false;
                 for (int i = 0; i < contacts.Count; i++)
                 {
@@ -222,6 +245,7 @@
         {
             Console.WriteLine("Do you want to create new AddressBook press 1 for yes or 2 for no:");
             int num = Convert.ToInt32(Console.ReadLine());
+
             while (num == 1)
             {
                 Console.WriteLine("Please enter a name of addressbook:");
@@ -229,15 +253,15 @@
                 //creating list of contact
                 List<Contact> addressBook = new List<Contact>();
                 addressBookSystem.Add(name, addressBook);
+
                 CreatingContacts(addressBook);
-                /*
                 if (addressBook.Count > 0)
                 {
                     EditContacts(addressBook);
                     DeleteContacts(addressBook);
-                }   
+                }
                 DisplayDictionary(addressBookSystem);
-                */
+
                 Console.WriteLine("Do you want to create another addressbook press 1 or press 2 for exit:");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -250,9 +274,10 @@
             Console.WriteLine("Welcome to Address Book Sytem.");
             CreateAddresBook();
             DisplayDictionary(addressBookSystem);
-            //SearchByCityOrState();
-            FilterByCityAndState();
-            ShowCountofContactsbyCityandState();
+            // SearchByCityOrState();
+            //FilterByCityAndState();
+            // ShowCountofContactsbyCityandState();
+            SortByName();
             //DisplayContacts();
             //EditContacts();
             //DeleteContacts();            
