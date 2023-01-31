@@ -2,6 +2,19 @@
 {
     internal class Program
     {
+        public static void WriteToFile()
+        {
+            string path = @"C:\AddressBookCode\AddressBookProblem\Contact.txt";
+
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                foreach (var kv in addressBookSystem)
+                {
+                    foreach (var contact in kv.Value)
+                        sw.WriteLine(contact.ToString());
+                }
+            }
+        }
         public static void SortByCityAndStateOrZip()
         {
             Console.WriteLine("Do you want to sort contact then press 1 for yes and 2 for no ");
@@ -24,7 +37,6 @@
                             sort.AddRange(list);
                         }
                         DisplayContactsByName(sort);
-
                         Console.WriteLine("===============================");
                         break;
                     case 2:
@@ -34,7 +46,6 @@
                             sort.AddRange(list);
                         }
                         DisplayContactsByName(sort);
-
                         Console.WriteLine("===============================");
                         break;
                     case 3:
@@ -54,7 +65,6 @@
         {
             Console.WriteLine("Do you want to sort contact using firstname then press 1 or press 2 for exit ");
             int num = Convert.ToInt32(Console.ReadLine());
-
             List<Contact> sort = new List<Contact>();
             foreach (var kv in addressBookSystem)
             {
@@ -62,7 +72,6 @@
                 sort.AddRange(list);
             }
             DisplayContactsByName(sort);
-
             Console.WriteLine("===============================");
         }
         public static void DisplayContactsByName(List<Contact> sort)
@@ -97,6 +106,7 @@
                 foreach (Contact contact in kv.Value)
                 {
                     // City filtering
+
                     //check city is added into city dictionary?
                     if (cityDict.ContainsKey(contact.city))
                     {
@@ -137,6 +147,7 @@
                 List<Contact> tempcontacts = new List<Contact>();
                 Console.WriteLine("Enter the city or state to search :");
                 string iCity = Console.ReadLine();
+
                 foreach (var kv in addressBookSystem)
                 {
                     var list = kv.Value.Where(x => x.city.Equals(iCity)).ToList();
@@ -155,7 +166,6 @@
         {
             Console.WriteLine("Enter first name: ");
             string tempFirstname = Console.ReadLine();
-
             if (CheckDuplicate(contacts, tempFirstname))
             {
                 return false;
@@ -181,11 +191,15 @@
         {
             Console.WriteLine("Do you want to add new contact press 1 or press 2 to cancle.");
             int num = Convert.ToInt32(Console.ReadLine());
+
+
             while (num == 1)
             {
                 Contact contact = new Contact();
+
                 if (FillingDetails(contact, contacts))
                     contacts.Add(contact);
+
                 Console.WriteLine("Do you want to add anoter contact then press 1 or press 2 for exit ");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -209,6 +223,7 @@
         {
             //print contacts
             Console.WriteLine("Current contacts in adress book:");
+
             foreach (Contact contact in contacts)
             {
                 Console.WriteLine(contact.firstName);
@@ -252,6 +267,7 @@
             {
                 Console.WriteLine("Enter contact First name");
                 string firstName = Console.ReadLine();
+
                 bool found = false;
                 for (int i = 0; i < contacts.Count; i++)
                 {
@@ -289,7 +305,6 @@
         {
             Console.WriteLine("Do you want to create new AddressBook press 1 for yes or 2 for no:");
             int num = Convert.ToInt32(Console.ReadLine());
-
             while (num == 1)
             {
                 Console.WriteLine("Please enter a name of addressbook:");
@@ -305,7 +320,6 @@
                     DeleteContacts(addressBook);
                 }
                 DisplayDictionary(addressBookSystem);
-
                 Console.WriteLine("Do you want to create another addressbook press 1 or press 2 for exit:");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -316,15 +330,21 @@
         public static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Address Book Sytem.");
-            CreateAddresBook();
-            DisplayDictionary(addressBookSystem);
-            // SearchByCityOrState();
-            //FilterByCityAndState();
-            // ShowCountofContactsbyCityandState();
-            SortByName();
-            //DisplayContacts();
-            //EditContacts();
-            //DeleteContacts();            
+            try
+            {
+                CreateAddresBook();
+                DisplayDictionary(addressBookSystem);
+                //DisplayContacts();
+                //SearchByCityOrState();
+                //FilterByCityAndState();
+                //ShowCountofContactsbyCityandState();
+                //SortByName();
+                WriteToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
     }
 }
