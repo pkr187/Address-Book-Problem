@@ -1,10 +1,81 @@
-﻿namespace AddressBookProblem
+﻿using CsvHelper;
+using Newtonsoft.Json;
+using System.Formats.Asn1;
+using System.Globalization;
+
+namespace AddressBookProblem
 {
     internal class Program
     {
-        public static void WriteToFile()
+        public static void WriteToJsonFile()
+        {
+            string path = @"C:\AddressBookCode\AddressBookProblem\Contact.json";
+
+            foreach (var book in addressBookSystem.Values)
+            {
+                string jsonData = JsonConvert.SerializeObject(book);
+
+                File.WriteAllText(path, jsonData);
+            }
+
+            Console.WriteLine("wrote contact jason file");
+        }
+        public static void ReadJsonFile()
+        {
+            string path = @"C:\AddressBookCode\AddressBookProblem\Contact.json";
+            string jsonData = File.ReadAllText(path);
+            if (jsonData != null || jsonData.Equals(String.Empty))
+            {
+                var jsonResult = JsonConvert.DeserializeObject<List<Contact>>(jsonData).ToList();
+                Console.WriteLine("Reading from Json file");
+                foreach (var item in jsonResult)
+                {
+                    Console.WriteLine(item.ToString());
+                }
+            }
+        }
+        public static void WriteToCsvFile()
         {
             string path = @"C:\AddressBookCode\AddressBookProblem\Contacts.csv";
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                CsvWriter cw = new CsvWriter(sw, CultureInfo.InvariantCulture);
+                Console.WriteLine("Creating and writing into Contact CSV file");
+                //While writing Contact first row is always property Names then all values of list
+                foreach (var book in addressBookSystem.Values)
+                {
+                    cw.WriteRecords<Contact>(book);
+                }
+                Console.WriteLine("Done writing");
+            }
+        }
+        public static void ReadCsvFile()
+        {
+            string path = @"C:\AddressBookCode\AddressBookProblem\Contacts.csv";
+            if (File.Exists(path))
+            {
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    CsvReader cr = new CsvReader(sr, CultureInfo.InvariantCulture);
+
+                    //while reading file first row should be property names rest rows should be values to create objects
+                    List<Contact> readResult = cr.GetRecords<Contact>().ToList();
+                    Console.WriteLine("Reading from Contact CSV file");
+
+                    //displaying read object
+                    foreach (var item in readResult)
+                    {
+                        Console.WriteLine(item.ToString());
+                    }
+                }
+            }
+            else
+                Console.WriteLine("Contact.csv file doenot exists");
+        }
+        //uc13
+        public static void WriteToFile()
+        {
+            string path = @"C:\AddressBookCode\AddressBookProblem\Contact.txt";
 
             using (StreamWriter sw = File.CreateText(path))
             {
@@ -26,6 +97,7 @@
                 Console.WriteLine("press 2 for State");
                 Console.WriteLine("press 3 for Zipcode: ");
                 Console.WriteLine("press any key for Exit");
+
                 int num = Convert.ToInt32(Console.ReadLine());
                 List<Contact> sort = new List<Contact>();
                 switch (num)
@@ -37,6 +109,7 @@
                             sort.AddRange(list);
                         }
                         DisplayContactsByName(sort);
+
                         Console.WriteLine("===============================");
                         break;
                     case 2:
@@ -46,6 +119,7 @@
                             sort.AddRange(list);
                         }
                         DisplayContactsByName(sort);
+
                         Console.WriteLine("===============================");
                         break;
                     case 3:
@@ -65,6 +139,7 @@
         {
             Console.WriteLine("Do you want to sort contact using firstname then press 1 or press 2 for exit ");
             int num = Convert.ToInt32(Console.ReadLine());
+
             List<Contact> sort = new List<Contact>();
             foreach (var kv in addressBookSystem)
             {
@@ -72,12 +147,14 @@
                 sort.AddRange(list);
             }
             DisplayContactsByName(sort);
+
             Console.WriteLine("===============================");
         }
         public static void DisplayContactsByName(List<Contact> sort)
         {
             //print contacts
             Console.WriteLine("Current contacts in adress book:");
+
             foreach (Contact contact in sort)
             {
                 Console.WriteLine(contact.firstName);
@@ -88,12 +165,16 @@
         {
             Console.WriteLine("Enter city name to show counts in that city");
             string icity = Console.ReadLine();
+
             if (cityDict.ContainsKey(icity))
                 Console.WriteLine("number of contacts in city {0} are {1}", icity, cityDict[icity].Count);
             else
                 Console.WriteLine("number of contacts in city {0} are zero", icity);
+
+
             Console.WriteLine("Enter state name to show counts in that state");
             icity = Console.ReadLine();
+
             if (stateDict.ContainsKey(icity))
                 Console.WriteLine("number of contacts in state {0} are {1}", icity, stateDict[icity].Count);
             else
@@ -106,7 +187,6 @@
                 foreach (Contact contact in kv.Value)
                 {
                     // City filtering
-
                     //check city is added into city dictionary?
                     if (cityDict.ContainsKey(contact.city))
                     {
@@ -166,6 +246,7 @@
         {
             Console.WriteLine("Enter first name: ");
             string tempFirstname = Console.ReadLine();
+
             if (CheckDuplicate(contacts, tempFirstname))
             {
                 return false;
@@ -192,7 +273,6 @@
             Console.WriteLine("Do you want to add new contact press 1 or press 2 to cancle.");
             int num = Convert.ToInt32(Console.ReadLine());
 
-
             while (num == 1)
             {
                 Contact contact = new Contact();
@@ -211,6 +291,7 @@
             //Any will check for duplicate same firstnamename in database
             if (contacts.Count > 0)
             {
+
                 if (contacts.Any(x => x.firstName.Equals(firstName)))
                 {
                     Console.WriteLine("Already exist in database");
@@ -263,6 +344,7 @@
             //deleting contact
             Console.WriteLine("Do you want to delete contact press 1 to delete or press 2 to cancle.");
             int num = Convert.ToInt32(Console.ReadLine());
+
             while (num == 1 && contacts.Count > 0)
             {
                 Console.WriteLine("Enter contact First name");
@@ -289,6 +371,7 @@
                 DisplayContacts(contacts);
                 Console.WriteLine("Do you want to delete contact press 1 to delete or press 2 to cancle.");
                 num = Convert.ToInt32(Console.ReadLine());
+
             }//while end
         }
         public static void DisplayDictionary(Dictionary<string, List<Contact>> dict)
@@ -320,6 +403,7 @@
                     DeleteContacts(addressBook);
                 }
                 DisplayDictionary(addressBookSystem);
+
                 Console.WriteLine("Do you want to create another addressbook press 1 or press 2 for exit:");
                 num = Convert.ToInt32(Console.ReadLine());
             }
@@ -339,7 +423,11 @@
                 //FilterByCityAndState();
                 //ShowCountofContactsbyCityandState();
                 //SortByName();
-                WriteToFile();
+                // WriteToFile();
+                //WriteToCsvFile();
+                //ReadCsvFile();
+                WriteToJsonFile();
+                ReadJsonFile();
             }
             catch (Exception ex)
             {
