@@ -4,7 +4,7 @@
     {
         public static void WriteToFile()
         {
-            string path = @"C:\AddressBookCode\AddressBookProblem\Contact.txt";
+            string path = @"C:\AddressBookCode\AddressBookProblem\Contacts.csv";
 
             using (StreamWriter sw = File.CreateText(path))
             {
